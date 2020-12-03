@@ -4,40 +4,31 @@ using UnityEngine;
 
 public class MouseAim : MonoBehaviour
 {
+    public Transform camPivot;
+    float heading = 0;
+    public Transform cam;
+    public float sensitivty;
 
-    // Use this for initialization  
-    void Start()
-    {
+    Vector2 input;
 
-    }
 
     // Update is called once per frame  
     void Update()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.Translate(0.01f, 0f, 0f);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.Translate(-0.01f, 0f, 0f);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.Translate(0.0f, 0f, -0.01f);
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Translate(0.0f, 0f, 0.01f);
-        }
+        heading += Input.GetAxis("Mouse X") * Time.deltaTime * sensitivty;
+        camPivot.rotation = Quaternion.Euler(0, heading, 0);
 
+        input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        input = Vector2.ClampMagnitude(input, 1);
 
-        bool isLeftButtonDown = Input.GetMouseButtonDown(0);
-        bool isRightButtonDown = Input.GetMouseButtonDown(1);
-        bool isMiddleButtonDown = Input.GetMouseButtonDown(2);
+        Vector3 camF = cam.forward;
+        Vector3 camR = cam.right;
 
-        print(isLeftButtonDown);
+        camF.y = 0;
+        camR.y = 0;
+        camF = camF.normalized;
+        camR = camR.normalized;
 
+        transform.position += (camF * input.y + camR * input.x) * Time.deltaTime * 5;
     }
-
 }
